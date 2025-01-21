@@ -12,7 +12,9 @@ jobs:
   node:
     uses: nasa-gcn/.github/.github/workflows/node.yml@main
     secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      permissions:
+  id-token: write # This is required for requesting the JWT
+role-to-assume:arn:aws:iam::339713181654:role/Github-aws
   playwright:
     timeout-minutes: 60
     runs-on: ubuntu-latest
