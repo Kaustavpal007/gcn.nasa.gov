@@ -1,37 +1,27 @@
-name: Test
+- name: Format code with Prettier
+  run: npx prettier --write .
+- name: Format code with Prettier
+  run: npx prettier --write .
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  node:
-    uses: nasa-gcn/.github/.github/workflows/node.yml@main
-    secrets:
-      permissions:
-  id-token: write # This is required for requesting the JWT
-role-to-assume:arn:aws:iam::339713181654:role/Github-aws
-  playwright:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npx playwright test
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+- name: Check formatting with Prettier
+  run: npx prettier -c .
+- uses: actions/checkout@v4
+- uses: actions/setup-node@v4
+  with:
+    node-version: lts/*
+- name: Install dependencies
+  run: npm ci
+- name: Install Playwright Browsers
+  run: npx playwright install --with-deps
+- name: Format code with Prettier
+  run: npx prettier --write .
+- name: Check formatting with Prettier
+  run: npx prettier -c .
+- name: Run Playwright tests
+  run: npx playwright test
+- uses: actions/upload-artifact@v4
+  if: always()
+  with:
+    name: playwright-report
+    path: playwright-report/
+    retention-days: 30
