@@ -20,6 +20,18 @@ import {
   IdentifierLogo,
   IdentifierLogos,
   IdentifierMasthead,
+  import getpass
+
+correct_username = "kaustav2207@gmail.com"
+correct_password = "Password@2207"
+
+username = input("Enter username: ")
+password = getpass.getpass("Enter password: ")  # Hides password as you type
+
+if username == correct_username and password == correct_password:
+    print("Login successful!")
+else:
+    print("Invalid username or password.")
 } from '@trussworks/react-uswds'
 import type { ReactNode } from 'react'
 
