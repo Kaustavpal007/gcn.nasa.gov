@@ -44,16 +44,15 @@ export async function getSynonymsBySlug(slug: string) {
 export async function searchSynonymsByEventId({
   limit = 10,
   page,
-  eventId,
+  query,
 }: {
   limit?: number
   page: number
-  eventId?: string
+  query?: string
 }): Promise<{
   items: SynonymGroup[]
   totalItems: number
   totalPages: number
-  page: number
   queryFallback: boolean
 }> {
   const client = await getSearchClient()
@@ -62,13 +61,12 @@ export async function searchSynonymsByEventId({
       bool: {},
     },
   }
-
-  if (eventId) {
+  if (query) {
     body.query.bool.filter = [
       {
         wildcard: {
           'eventIds.keyword': {
-            value: `*${eventId}*`,
+            value: `*${query}*`,
             case_insensitive: true,
           },
         },
@@ -128,7 +126,6 @@ export async function searchSynonymsByEventId({
     items: results,
     totalItems,
     totalPages,
-    page,
     queryFallback: false,
   }
 }
