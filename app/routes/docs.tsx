@@ -22,9 +22,35 @@ export default function () {
         <div className="desktop:grid-col-3">
           <SideNav
             items={[
-              <NavLink key="." to="." end>
-                About GCN
-              </NavLink>,
+              <>
+                <NavLink key="about" to="about">
+                  About GCN
+                </NavLink>{' '}
+                <SideNavSub
+                  base="about"
+                  key="about-sub"
+                  items={[
+                    <NavLink
+                      key="conferences-awards"
+                      to="about/conferences-awards"
+                    >
+                      Conferences & Awards
+                    </NavLink>,
+                    <NavLink key="history" to="about/history">
+                      History
+                    </NavLink>,
+                    <NavLink
+                      key="presentations-publications"
+                      to="about/presentations-publications"
+                    >
+                      Presentations & Publications
+                    </NavLink>,
+                    <NavLink key="team" to="about/team">
+                      Team
+                    </NavLink>,
+                  ]}
+                />
+              </>,
               <>
                 <NavLink key="circulars" to="circulars">
                   Circulars
@@ -88,9 +114,6 @@ export default function () {
                     <NavLink key="deployment" to="contributing/deployment">
                       Deployment
                     </NavLink>,
-                    <NavLink key="email" to="contributing/email">
-                      Email Data Flow
-                    </NavLink>,
                     <NavLink key="project" to="contributing/project">
                       GitHub Project Board
                     </NavLink>,
@@ -126,9 +149,6 @@ export default function () {
                   ]}
                 />
               </>,
-              <NavLink key="history" to="history">
-                History
-              </NavLink>,
               <>
                 <NavLink key="client" to="client">
                   Kafka Client Setup
@@ -151,6 +171,9 @@ export default function () {
                     </Link>,
                     <Link key="java" to="client#java">
                       Java
+                    </Link>,
+                    <Link key="pyspark" to="client#rust">
+                      Rust
                     </Link>,
                     <Link key="pyspark" to="client#pyspark">
                       PySpark
@@ -215,9 +238,26 @@ export default function () {
               <NavLink key="vtp" to="vtp">
                 VOEvent Transport Protocol Migration
               </NavLink>,
-              <NavLink key="admin" to="admin">
-                Administration
-              </NavLink>,
+              <>
+                <NavLink key="internal" to="internal">
+                  Internal
+                </NavLink>
+                <SideNavSub
+                  base="internal"
+                  key="internal-sub"
+                  items={[
+                    <NavLink key="admin" to="internal/admin">
+                      Administration
+                    </NavLink>,
+                    <NavLink key="auth" to="internal/auth">
+                      Auth
+                    </NavLink>,
+                    <NavLink key="email" to="internal/email">
+                      Email Data Flow
+                    </NavLink>,
+                  ]}
+                />
+              </>,
             ]}
           />
         </div>

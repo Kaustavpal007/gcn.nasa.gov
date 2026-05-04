@@ -9,6 +9,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import {
   Form,
   Link,
+  json,
   useActionData,
   useLoaderData,
   useSearchParams,
@@ -47,9 +48,10 @@ import Hint from '~/components/Hint'
 import { ToolbarButtonGroup } from '~/components/ToolbarButtonGroup'
 import PaginationSelectionFooter from '~/components/pagination/PaginationSelectionFooter'
 import { origin } from '~/lib/env.server'
+import { getCanonicalUrlHeaders } from '~/lib/headers.server'
 import { getFormDataString } from '~/lib/utils'
 import { postZendeskRequest } from '~/lib/zendesk.server'
-import { useModStatus } from '~/root'
+import { usePermissionModerator } from '~/root'
 import { getUser } from '~/routes/_auth/user.server'
 import {
   type CircularFormat,
@@ -87,13 +89,16 @@ export async function loader({ request: { url } }: LoaderFunctionArgs) {
   })
   const requestedChangeCount = (await getChangeRequests()).length
 
-  return {
-    page,
-    ...results,
-    requestedChangeCount,
-    limit,
-    isGroupView,
-  }
+  return json(
+    {
+      page,
+      ...results,
+      requestedChangeCount,
+      limit,
+      isGroupView,
+    },
+    { headers: getCanonicalUrlHeaders(new URL(`/circulars`, origin)) }
+  )
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -110,9 +115,6 @@ export async function action({ request }: ActionFunctionArgs) {
     throw new Response('Body and subject are required', { status: 400 })
   const user = await getUser(request)
   const circularId = getFormDataString(data, 'circularId')
-  const createdOnDate =
-    getFormDataString(data, 'createdOn') || Date.now().toString()
-  const createdOn = Date.parse(createdOnDate)
   let newCircular
   const props = { body, subject, eventId, ...(format ? { format } : {}) }
   switch (intent) {
@@ -120,15 +122,13 @@ export async function action({ request }: ActionFunctionArgs) {
       if (circularId === undefined)
         throw new Response('circularId is required', { status: 400 })
 
-      if (!user?.name || !user.email) throw new Response(null, { status: 403 })
+      if (!user?.email) throw new Response(null, { status: 403 })
+      const name = user.name ?? user.email
       let submitter
       if (user.groups.includes(moderatorGroup)) {
         submitter = getFormDataString(data, 'submitter')
         if (!submitter) throw new Response(null, { status: 400 })
       }
-
-      if (!createdOnDate || !createdOn)
-        throw new Response(null, { status: 400 })
 
       let zendeskTicketId: number | undefined
 
@@ -142,10 +142,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
       if (!zendeskTicketId) {
         zendeskTicketId = await postZendeskRequest({
-          requester: { name: user.name, email: user.email },
+          requester: { name, email: user.email },
           subject: `Change Request for Circular ${circularId}`,
           comment: {
-            body: `${user.name} has requested an edit. Review at ${origin}/circulars`,
+            body: `${name} has requested an edit. Review at ${origin}/circulars`,
           },
         })
       }
@@ -157,7 +157,6 @@ export async function action({ request }: ActionFunctionArgs) {
           circularId: parseFloat(circularId),
           ...props,
           submitter,
-          createdOn,
           zendeskTicketId,
           eventId,
         },
@@ -168,13 +167,11 @@ export async function action({ request }: ActionFunctionArgs) {
     case 'edit':
       if (circularId === undefined)
         throw new Response('circularId is required', { status: 400 })
-      if (!createdOnDate || !createdOn)
-        throw new Response(null, { status: 400 })
+
       await putVersion(
         {
           circularId: parseFloat(circularId),
           ...props,
-          createdOn,
         },
         user
       )
@@ -211,7 +208,7 @@ export default function () {
   const formId = useId()
   const submit = useSubmit()
   const [searchParams] = useSearchParams()
-  const userIsModerator = useModStatus()
+  const userIsModerator = usePermissionModerator()
 
   // Strip off the ?index param if we navigated here from a form.
   // See https://remix.run/docs/en/main/guides/index-query-param.

@@ -13,6 +13,13 @@ circulars
 support
   src build/email-incoming/support
 
+@eventbridge
+app_clients
+  src build/eventbridge/app-clients
+  source aws.cognito-idp
+  detailType 'AWS Service Event via CloudTrail'
+  eventName Token_POST
+
 @scheduled
 ads
   cron 0 8 ? * MON *
@@ -20,6 +27,9 @@ ads
 circulars
   rate 1 day
   src build/scheduled/circulars
+app-client-expire
+  rate 3 days
+  src build/scheduled/app-client-expire
 
 @tables-streams
 circulars
@@ -94,6 +104,23 @@ legacy_users
   email *String
   PointInTimeRecovery true
 
+users
+  sub *String
+  PointInTimeRecovery true
+
+teams
+  teamId *String
+  PointInTimeRecovery true
+
+team_members
+  sub *String
+  teamId **String
+  PointInTimeRecovery true
+
+topics
+  topicId *String
+  PointInTimeRecovery true
+
 @tables-indexes
 email_notification_subscription
   topic *String
@@ -147,8 +174,24 @@ synonyms
   slug *String
   name synonymsBySlug
 
+client_credentials
+  client_id *String
+  name credentialsByClientId
+
+users
+  username *String
+  name usersByUserName
+
+users
+  email *String
+  name usersByEmail
+
+team_members
+  teamId *String
+  name usersByTeam
+
 @aws
-runtime nodejs22.x
+runtime nodejs24.x
 region us-east-1
 architecture arm64
 memory 256
@@ -178,3 +221,4 @@ email-outgoing  # Grant the Lambda function permission to send email; add email 
 email-incoming  # Enable Lambda handlers for incoming emails
 nasa-gcn/architect-plugin-search  # Add an AWS OpenSearch Serverless collection.
 nasa-gcn/architect-plugin-dynamodb-local
+eventbridge # Enable sending Eventbridge Events to lambdas

@@ -134,6 +134,14 @@ a[rel~='external'] {
 }
 
 /*
+ * Outlines for input groups that do not contain input elements
+ */
+.usa-input---not-editable {
+  border: 0;
+  padding: units($theme-input-state-border-width);
+}
+
+/*
  * Styles for notice cards
  */
 
@@ -333,7 +341,7 @@ input.react-tags__combobox-input:focus {
  */
 
 .overflow-table {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 /*
@@ -400,4 +408,16 @@ figure {
 }
 figure.bordered {
   @include u-border-left(2px, 'base');
+}
+
+/*
+ * Styling for rehype-citation bibliographies
+ */
+
+.csl-bib-body {
+  @extend .usa-list;
+}
+
+.csl-entry {
+  display: list-item;
 }

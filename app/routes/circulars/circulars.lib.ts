@@ -92,7 +92,7 @@ const subjectMatchers: SubjectMatcher[] = [
   ],
   [/sb[.\s_-]*(\d{8})/i, ([, id]) => `sb${id}`],
   [/XRF[.\s_-]*(\d{6}[a-z]?)/i, ([, id]) => `XRF ${id.toUpperCase()}`],
-  [/AT[.\s_-]*(\d{4}[a-z]*)/i, ([, id]) => `AT${id.toLowerCase()}`],
+  [/AT[.\s_-]*(\d{4}[a-z]+)/i, ([, id]) => `AT${id.toLowerCase()}`],
 ]
 
 /** Format a Circular as plain text. */
@@ -134,19 +134,16 @@ export function formatDateISO(date: number) {
   return new Date(date).toISOString().replace(/\.\d+Z$/, 'Z')
 }
 
-export function eventIdIsValid(eventId: string) {
-  return parseEventFromSubject(eventId) !== undefined
-}
-
 /** Return true if the subject is valid, false if it is invalid, or undefined if it is an empty string */
 export function subjectIsValid(subject: string) {
   if (subject.length) {
     const subjectLowerCase = subject.toLowerCase()
     return (
       !emailIsAutoReply(subject) &&
-      validSubjectKeywords.some((x) =>
+      (validSubjectKeywords.some((x) =>
         subjectLowerCase.includes(x.toLowerCase())
-      )
+      ) ||
+        parseEventFromSubject(subject))
     )
   }
 }
@@ -182,10 +179,13 @@ export const validSubjectKeywords = [
   'Baksan Neutrino Observatory Alert',
   'CALET',
   'Chandra',
+  'COLIBRI',
+  'COLIBRÍ',
   'EP',
   'Fermi',
   'FRB',
   'FXT',
+  'GOTO',
   'GRANDMA',
   'GRB',
   'GW',
@@ -214,7 +214,9 @@ export const validSubjectKeywords = [
   'SDSS',
   'SFXT',
   'SGR',
+  'SN',
   'Super-Kamiokande',
+  'Supernova',
   'Suzaku',
   'SVOM',
   'Swift',

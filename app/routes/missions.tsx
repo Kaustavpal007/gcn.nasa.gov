@@ -24,14 +24,18 @@ export default function () {
               <NavLink key="." to="." end>
                 Missions, Instruments, and Facilities
               </NavLink>,
+              <NavLink key="boom" to="boom" end>
+                BOOM
+              </NavLink>,
               <NavLink key="calet" to="calet">
                 CALET
               </NavLink>,
-              useFeature('CHIME') && (
-                <NavLink key="chime" to="chime">
-                  CHIME
-                </NavLink>
-              ),
+              <NavLink key="chime" to="chime">
+                CHIME
+              </NavLink>,
+              <NavLink key="dsa110" to="dsa110">
+                DSA-110
+              </NavLink>,
               <NavLink key="einstein-probe" to="einstein-probe">
                 Einstein Probe
               </NavLink>,
@@ -61,9 +65,6 @@ export default function () {
               <NavLink key="maxi" to="maxi">
                 MAXI
               </NavLink>,
-              <NavLink key="moa" to="moa">
-                MOA
-              </NavLink>,
               <NavLink key="swift" to="swift">
                 Neil Gehrels Swift Observatory
               </NavLink>,
@@ -91,6 +92,9 @@ export default function () {
                     </NavLink>,
                     <NavLink key="integral" to="archive/integral">
                       INTEGRAL
+                    </NavLink>,
+                    <NavLink key="moa" to="archive/moa">
+                      MOA
                     </NavLink>,
                   ]}
                 />

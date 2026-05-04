@@ -61,21 +61,32 @@ const NoticeTypeLinks: { [key: string]: string | undefined } = {
 }
 
 export const JsonNoticeTypes: { [key: string]: string[] } = {
+  BOOM: ['gcn.notices.boom.alert'],
   Circulars: ['gcn.circulars'],
-  Heartbeat: ['gcn.heartbeat'],
-  IceCube: ['gcn.notices.icecube.lvk_nu_track_search'],
-  LVK: ['igwn.gwalert'],
-  Swift: ['gcn.notices.swift.bat.guano'],
+  CHIME: ['gcn.notices.chime.frb'],
+  'DSA-110': ['gcn.notices.dsa110.frb'],
   'Einstein Probe': ['gcn.notices.einstein_probe.wxt.alert'],
+  Heartbeat: ['gcn.heartbeat'],
+  IceCube: [
+    'gcn.notices.icecube.lvk_nu_track_search',
+    'gcn.notices.icecube.gold_bronze_track_alerts',
+  ],
+  LVK: ['igwn.gwalert'],
+  'Super-Kamiokande': ['gcn.notices.superk.sn_alert'],
+  Swift: ['gcn.notices.swift.bat.guano'],
 }
 
 const JsonNoticeTypeLinks: { [key: string]: string | undefined } = {
+  BOOM: '/missions/boom',
   Circulars: '/circulars',
+  CHIME: '/missions/chime',
+  'DSA-110': '/missions/dsa110',
+  'Einstein Probe': '/missions/einstein-probe',
   Heartbeat: '/docs/faq#how-can-i-tell-that-my-kafka-client-is-working',
   IceCube: '/missions/icecube',
   LVK: 'https://emfollow.docs.ligo.org/userguide/tutorial/receiving/gcn.html#receiving-and-parsing-notices',
+  'Super-Kamiokande': '/missions/sksn',
   Swift: '/missions/swift',
-  'Einstein Probe': '/missions/einstein-probe',
 }
 
 interface NoticeTypeCheckboxProps {
@@ -113,19 +124,6 @@ export function NoticeTypeCheckboxes({
   if (useFeature('FERMI_GBM_QUICKSTART')) {
     JsonNoticeTypes.Fermi = ['gcn.notices.fermi.gbm']
     JsonNoticeTypeLinks.Fermi = '/missions/fermi'
-  }
-
-  if (useFeature('SUPER_K_QUICKSTART')) {
-    JsonNoticeTypes['Super Kamiokande'] = [
-      'gcn.notices.superk.sn_alert',
-      'gcn.notices.superk.sn_alert.test',
-    ]
-    JsonNoticeTypeLinks['Super Kamiokande'] = '/missions/sksn'
-  }
-
-  if (useFeature('CHIME')) {
-    JsonNoticeTypes.Chime = ['gcn.notices.chime.alert']
-    JsonNoticeTypeLinks.Chime = '/missions/chime'
   }
 
   if (useFeature('KM3NET')) {
